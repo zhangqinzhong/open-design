@@ -379,7 +379,13 @@ import {
   AiHtmlVersionSnapshotError,
   snapshotAiHtmlVersionsForRun,
 } from './run-html-version-snapshots.js';
-import { reportRunCompletedFromDaemon } from './langfuse-bridge.js';
+// [TELEMETRY-OFF] 遥测已关闭
+// import { reportRunCompletedFromDaemon } from './langfuse-bridge.js';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const reportRunCompletedFromDaemon = async (_opts?: any) => ({
+  langfuse_expected: false,
+  langfuse_delivery_status: 'accepted' as const,
+});
 import { buildPromptStackTelemetry } from './prompt-telemetry.js';
 import { readAnalyticsContext } from './analytics.js';
 import {
@@ -6305,6 +6311,8 @@ export async function startServer({
         // conversation is still examined.
         conversationId: run.conversationId ?? null,
       };
+      // [TELEMETRY-OFF] memory-llm 后台 LLM 记忆提取已关闭（会发对话内容到外部 LLM）
+      /*
       void import('./memory-llm.js')
         .then(({ extractWithLLM, distillAnnotationsToMemory }) => {
           // Read the reply HERE, in the post-import microtask, not in the
@@ -6321,12 +6329,6 @@ export async function startServer({
             },
             memoryOptions,
           );
-          // Auto-distill any inline preview feedback (comments / highlights /
-          // drawn marks) from this turn into durable feedback + rule memory.
-          // This closes the "interaction → memory" loop automatically: the
-          // agent no longer has to propose a rule and the user no longer has
-          // to click Keep — a review turn that carried annotations mines
-          // itself in the background and writes straight to the store.
           const annotationPass =
             safeCommentAttachments.length > 0
               ? distillAnnotationsToMemory(
@@ -6342,6 +6344,7 @@ export async function startServer({
           return Promise.allSettled([generalPass, annotationPass]);
         })
         .catch((err) => console.warn('[memory-llm] background failed', err));
+      */
     });
 
     // Critique Theater branch (M0 dark launch, default disabled).

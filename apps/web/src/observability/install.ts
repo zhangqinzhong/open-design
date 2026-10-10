@@ -19,7 +19,10 @@ import { installWhiteScreenDetector } from './white-screen';
 
 let installed = false;
 
+// [TELEMETRY-OFF] 遥测已关闭，observability 不再上报 PostHog
 export function installWebObservability(): () => void {
+  return () => undefined;
+  /*
   if (installed) return () => undefined;
   if (typeof window === 'undefined') return () => undefined;
   installed = true;
@@ -42,4 +45,5 @@ export function installWebObservability(): () => void {
     }
     installed = false;
   };
+  */
 }

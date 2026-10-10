@@ -652,11 +652,12 @@ function filterAllowedKeys(obj: Record<string, unknown>): AppConfigPrefs {
 // the user previously saved is preserved (only `undefined` gets
 // the new default), so opt-out users stay opted out across the
 // 0.7.x → 0.8.0 upgrade.
+// [TELEMETRY-OFF] 遥测已关闭，默认值改为 false
 function applyTelemetryDefaults(prefs: AppConfigPrefs): AppConfigPrefs {
   if (prefs.telemetry === undefined) {
     return {
       ...prefs,
-      telemetry: { metrics: true, content: true },
+      telemetry: { metrics: false, content: false },
     };
   }
   return prefs;

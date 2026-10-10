@@ -153,10 +153,13 @@ const NOOP_SERVICE: AnalyticsService = {
 // #1428 reviewer (codex-connector, lefarcen): even if a stale fetch wrapper
 // somehow attaches x-od-analytics-* headers to a request after the user
 // opted out, the daemon will still drop the capture.
-export function createAnalyticsService(args: {
+// [TELEMETRY-OFF] 遥测已关闭，createAnalyticsService 始终返回空操作
+export function createAnalyticsService(_args: {
   env?: NodeJS.ProcessEnv;
   dataDir: string;
 }): AnalyticsService {
+  return NOOP_SERVICE;
+  /*
   const env = args.env ?? process.env;
   const cfg = readPosthogConfig(env);
   if (!cfg) return NOOP_SERVICE;
@@ -278,6 +281,7 @@ export function createAnalyticsService(args: {
       }
     },
   };
+  */
 }
 
 const SYNTHETIC_DISTINCT_ID = `daemon-anon-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;

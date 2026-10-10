@@ -244,16 +244,19 @@ export interface CaptureDeps {
 
 // Fire a single PostHog capture over plain HTTPS. No-op without a key; never
 // throws; never blocks longer than `timeoutMs`.
+// [TELEMETRY-OFF] 遥测已关闭
 export async function captureStartupFailure(
-  args: {
+  _args: {
     posthogKey: string | null;
     posthogHost: string | null;
     distinctId: string;
     event: string;
     properties: Record<string, unknown>;
   },
-  deps: CaptureDeps = {},
+  _deps: CaptureDeps = {},
 ): Promise<void> {
+  return; // telemetry off
+  /*
   const key = args.posthogKey?.trim();
   if (!key) return; // fork builds / no key → no-op, zero network
   const host = (args.posthogHost?.trim() || DEFAULT_HOST).replace(/\/+$/, "");
@@ -305,6 +308,8 @@ export async function captureStartupFailure(
   });
   await Promise.race([send, timeout]);
   if (timer) clearTimeout(timer);
+}
+*/
 }
 
 export interface ReportStartupFailureArgs {

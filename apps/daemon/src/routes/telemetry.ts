@@ -28,19 +28,41 @@ export interface RegisterTelemetryRoutesDeps {
   readAppConfig: typeof readAppConfig;
 }
 
-export function registerTelemetryRoutes(app: Express, deps: RegisterTelemetryRoutesDeps): DaemonTelemetry {
+// [TELEMETRY-OFF] 遥测已关闭，registerTelemetryRoutes 返回空操作
+export function registerTelemetryRoutes(app: Express, _deps: RegisterTelemetryRoutesDeps): DaemonTelemetry {
+  const NOOP_ANALYTICS = {
+    capture: () => undefined,
+    captureSafety: async () => undefined,
+    shutdown: async () => undefined,
+  };
+
+  // /api/analytics/config — always return disabled
+  app.get('/api/analytics/config', async (_req, res) => {
+    res.json({
+      enabled: false,
+      env: 'development',
+      key: null,
+      host: null,
+      installationId: null,
+    });
+  });
+
+  // /api/observability/event — accept but noop
+  app.post('/api/observability/event', express.json({ limit: '64kb' }), (_req, res) => {
+    res.json({ ok: true });
+  });
+
+  return {
+    analyticsService: NOOP_ANALYTICS,
+    getCachedAppVersion: () => null,
+    reportFeedback: async () => ({ status: 'skipped_no_sink' as const }),
+  };
+  /*
   const { dataDir } = deps;
   const analyticsService = createAnalyticsService({ dataDir });
   let cachedAppVersion: any = null;
 
   // PostHog runtime config.
-  //
-  // - `enabled` reflects ONLY the user's consent toggle (Privacy -> "Share
-  //   usage data"). When false, posthog-js's full autocapture/$pageview/
-  //   $autocapture pipeline must stay off.
-  // - `key` and `host` are populated whenever the server has a build-time
-  //   POSTHOG_KEY, regardless of consent, so safety/error tracking can run.
-  // - Without a build-time key, every telemetry client remains a no-op.
   app.get('/api/analytics/config', async (_req, res) => {
     const baseline = readPublicConfigResponse();
     if (!baseline.enabled) {
@@ -122,6 +144,7 @@ export function registerTelemetryRoutes(app: Express, deps: RegisterTelemetryRou
         ...req,
       }),
   };
+  */
 }
 
 function installFatalTelemetryHandlers({

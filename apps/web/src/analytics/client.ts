@@ -182,7 +182,10 @@ function flushPersonProperties(): void {
 // each; the duplicate fetch is cheap and avoids cross-coupling the
 // (consent-gated) analytics init with the (always-on) error tracker.
 let exceptionBootstrapPromise: Promise<void> | null = null;
-export function bootstrapExceptionTracking(context: AnalyticsContext): Promise<void> {
+// [TELEMETRY-OFF] 遥测已关闭，不启动 PostHog
+export function bootstrapExceptionTracking(_context: AnalyticsContext): Promise<void> {
+  return Promise.resolve();
+  /*
   if (exceptionBootstrapPromise) return exceptionBootstrapPromise;
   exceptionBootstrapPromise = (async () => {
     try {
@@ -214,20 +217,17 @@ export function bootstrapExceptionTracking(context: AnalyticsContext): Promise<v
     }
   })();
   return exceptionBootstrapPromise;
+  */
 }
 
+// [TELEMETRY-OFF] 遥测已关闭，始终返回 null
 export async function getAnalyticsClient(
-  context: AnalyticsContext,
+  _context: AnalyticsContext,
 ): Promise<PostHog | null> {
+  return null;
+  /*
   if (client) return client;
   if (initPromise) return initPromise;
-  // PR #1428 reviewer (Siri-Ray): the first /api/analytics/config response
-  // is cached forever if it resolves to null. On first launch before the
-  // user accepts the privacy banner the daemon returns enabled=false, this
-  // promise resolves null, and every later track() call returns the cached
-  // null without re-fetching the now-enabled config. Clear initPromise
-  // whenever the resolution is null so a subsequent setConsent(true) can
-  // trigger a fresh init.
   const pending = (async () => {
     try {
       const res = await fetch('/api/analytics/config');
@@ -395,6 +395,8 @@ export async function getAnalyticsClient(
     if (!result) initPromise = null;
   });
   return pending;
+}
+*/
 }
 
 // Called from the AnalyticsProvider when the user toggles Privacy →
