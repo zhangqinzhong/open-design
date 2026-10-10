@@ -9,6 +9,7 @@
     "zh-TW": "像热爱驱动的讲述者一样把爱好做成故事"
   },
   "version": "0.1.0",
+  "publishedAt": "2026-05-12T07:18:16Z",
   "description": "A gamer's journey building a retro-arcade collection — the obsession, the hunt, and what the machines came to mean. Built as a decision-grade story deck for friends, hobby community.",
   "description_i18n": {
     "en": "A gamer's journey building a retro-arcade collection — the obsession, the hunt, and what the machines came to mean. Built as a decision-grade story deck for friends, hobby community.",
@@ -17,7 +18,7 @@
   },
   "license": "MIT",
   "author": {
-    "name": "Open Design",
+    "name": "OpenDesign",
     "url": "https://github.com/nexu-io"
   },
   "homepage": "https://github.com/nexu-io/open-design/tree/main/plugins/_official/examples/html-ppt-zhangzara-8-bit-orbit",
